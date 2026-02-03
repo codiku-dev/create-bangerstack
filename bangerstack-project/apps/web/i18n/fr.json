@@ -1,0 +1,107 @@
+{
+  "HomePage": {
+    "title": "Bonjour le monde !"
+  },
+  "Landing": {
+    "header": {
+      "badge": "DX d'abord",
+      "headline": "Développez fullstack avec plaisir",
+      "tagline": "APIs type-safe, packages partagés, auth & doc inclus. Pensé pour l'expérience développeur.",
+      "stack": "Turbo · Nest · tRPC · Next · Bun"
+    },
+    "selectFeaturePrompt": "Choisis une catégorie ci-dessus pour voir les détails.",
+    "templateSubtitle": "Template (Turbo Nest Trpc Next)",
+    "templateSubtitleWords": "Turbo Nest Trpc Next ",
+    "steps": {
+      "fullstackTypeSafety": "Fullstack type safety",
+      "shareResources": "Partager des ressources",
+      "storybook": "Storybook",
+      "typedEnv": "Env typés et validés",
+      "internationalisation": "Internationalisation",
+      "apiProtection": "Protection des API",
+      "autoDoc": "Auto documentation",
+      "authentication": "Authentification",
+      "logging": "Logging back-end"
+    },
+    "descriptions": {
+      "fullstackTypeSafety": "Créez un endpoint NestJS et appelez-le côté front avec une sécurité de types complète.",
+      "shareResources": "Créez un composant React simple et partagez-le entre vos apps.",
+      "storybook": "Créez vos stories et développez vos composants en isolation.",
+      "typedEnv": "Variables d'environnement typées et validées au démarrage.",
+      "internationalisation": "Utilisez next-intl pour traduire votre application facilement.",
+      "apiProtection": "AuthGuardRouter + @Public pour les routes publiques, les routes protégées exigent une session. Testez les deux appels ci-dessous.",
+      "autoDoc": "",
+      "authentication": "Connexion, inscription et gestion de session côté front avec Better Auth.",
+      "logging": "Utilisez AuthGuardRouter avec logs: true pour afficher des logs de requêtes formatés (URL, meta, response) dans le terminal."
+    },
+    "step1": {
+      "title": "Fullstack type safety",
+      "nestjsSide": "NestJS",
+      "nextjsSide": "NextJS",
+      "backendSide": "Back-end",
+      "frontendSide": "Front-end"
+    },
+    "step2": {
+      "title": "Partagez vos ressources",
+      "uiPackageSide": "UI package",
+      "nextjsSide": "NextJS",
+      "result": "NextJS",
+      "resultLabel": "Bouton importé depuis @repo/ui (package partagé) :",
+      "buttonLabel": "Mon bouton"
+    },
+    "step3": {
+      "title": "Storybook",
+      "uiPackageSide": "UI package side",
+      "result": "Résultat"
+    },
+    "step4": {
+      "title": "Variables d'environnement typées et validées",
+      "stronglyTypeEnv": "Definissez le schema de vos .env",
+      "typedEnv": "Type safety de process.env",
+      "typedEnvBadge": "Env fortement typé",
+      "zodSchemaBadge": "Schéma Zod",
+      "typedVarLabel": "Variable d'env fortement typée",
+      "validation": "Validation",
+      "validationTitle": "Validation permanente durant le dev et au build",
+      "envFile": ".env file",
+      "result": "Résultat",
+      "typeSafety": "Type safety",
+      "terminal": "Terminal",
+      "missing": "manquant"
+    },
+    "step5": {
+      "title": "Internationalisation",
+      "code": "Code",
+      "result": "Résultat"
+    },
+    "step6": {
+      "title": "Protection des API (Better Auth)",
+      "backendSide": "Back-end",
+      "publicFetch": "Public (hello)",
+      "protectedFetch": "Protégé (protectedHello)",
+      "fetchPublic": "Appel public",
+      "fetchProtected": "Appel privé",
+      "loading": "Chargement...",
+      "clickToFetch": "Cliquez pour lancer l'appel",
+      "unauthorized": "Non autorisé",
+      "receiveSession": "Vous pouvez recevoir la session"
+    },
+    "step8": {
+      "title": "Authentification avec Better Auth"
+    },
+    "step9": {
+      "title": "Logging back-end",
+      "codeLabel": "API",
+      "terminalLabel": "Terminal"
+    },
+    "step7": {
+      "title": "Auto documentation",
+      "screenshotAlt": "Interface de documentation API trpc-ui",
+      "openDocs": "Ouvrir trpc-ui"
+    }
+  },
+  "I18nExample": {
+    "title": "Bonjour le monde !",
+    "description": "Ce texte est traduit en utilisant next-intl."
+  }
+}

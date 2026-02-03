@@ -1,0 +1,15 @@
+{
+  "extends": "@repo/typescript-config/nestjs.json",
+  "compilerOptions": {
+    "noPropertyAccessFromIndexSignature": true,
+
+    "sourceMap": true,
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "paths": {
+      "@api/*": ["./*"]
+    },
+    "strictNullChecks": true,
+    "noImplicitAny": true
+  }
+}

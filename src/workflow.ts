@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { spawn } from "child_process";
 import * as prompts from "./prompts.js";
 import { run } from "./run.js";
 import * as docker from "./docker.js";
@@ -85,21 +84,3 @@ export async function startDatabase(workDir: string): Promise<void> {
   }
 }
 
-/**
- * Spawns the dev server in workDir and forwards stdio; exits the process with the child's exit code.
- */
-export function runProject(workDir: string, pmConfig: PmConfig): void {
-  const devArgs = pmConfig.run("dev");
-  const dev = spawn(devArgs[0], devArgs.slice(1), {
-    stdio: "inherit",
-    shell: true,
-    cwd: workDir,
-  });
-  dev.on("error", (err) => {
-    console.error(err);
-    process.exit(1);
-  });
-  dev.on("exit", (code) => {
-    process.exit(code ?? 0);
-  });
-}
