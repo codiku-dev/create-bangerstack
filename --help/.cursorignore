@@ -1,0 +1,13 @@
+!.env
+!.env.local
+!.env.local.development
+!.env.production
+!.env.test
+!.env.test.local
+!.env.test.local.development
+!.env.test.local.production
+!.env.test.local.test
+!.env.test.local.test.local
+!.env.test.local.test.local.development
+!.env.test.local.test.local.production
+!.env.test.local.test.local.test

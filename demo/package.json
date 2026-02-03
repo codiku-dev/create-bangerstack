@@ -1,0 +1,58 @@
+{
+  "name": "my-turborepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "author": "",
+  "license": "UNLICENSED",
+  "scripts": {
+    "#--------------------------GENERAL------------------------------#": "",
+    "dev": "bun db:update && concurrently -n turbo,ui,check --kill-others-on-fail \"turbo run dev\" \"npm run watch:ui\" \"npm run check-env:watch\"",
+    "watch:ui": "concurrently -n styles,components \"turbo run dev:styles --filter=@repo/ui\" \"turbo run dev:components --filter=@repo/ui\" ",
+    "build": "turbo run build",
+    "#--------------------------TESTING------------------------------#": "",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "#---------------------------API---------------------------------#": "",
+    "db:start": "turbo run db:start --filter=api",
+    "db:update": "cd apps/api && bun run db:update",
+    "db:studio": "turbo run db:studio --filter=api",
+    "#---------------------------UI---------------------------------#": "",
+    "storybook": "turbo run storybook --filter=@repo/ui",
+    "build-storybook": "turbo run build-storybook --filter=@repo/ui",
+    "ui:build:styles": "turbo run build:styles --filter=@repo/ui",
+    "ui:build:components": "turbo run build:components --filter=@repo/ui",
+    "ui:dev:styles": "turbo run dev:styles --filter=@repo/ui",
+    "ui:dev:components": "turbo run dev:components --filter=@repo/ui",
+    "#---------------------------ENV---------------------------------#": "",
+    "generate-env-types": "bun run scripts/generate-env-types.ts",
+    "check-env": "bun run scripts/check-env-all-apps.ts",
+    "check-env:watch": "bun run scripts/check-env-all-apps.ts -- --watch"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "chokidar": "^4.0.1",
+    "concurrently": "^9.1.0",
+    "dotenv": "^16.4.7",
+    "prettier": "^3.2.5",
+    "turbo": "^2.7.5"
+  },
+  "overrides": {
+    "@types/react": "19.2.9",
+    "@types/react-dom": "19.2.3"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "bun@1.2.15",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {
+    "nestjs-trpc": "1.6.1"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "create-bangerstack",
+  "version": "1.0.0",
+  "description": "Scaffold a new Bangerstack project from turbo-template (Next.js + NestJS monorepo)",
+  "type": "module",
+  "bin": {
+    "create-bangerstack": "./dist/cli.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "create-bangerstack",
+    "turbo",
+    "turborepo",
+    "nextjs",
+    "nestjs",
+    "monorepo",
+    "scaffold"
+  ],
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsc && node dist/cli.js",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "enquirer": "^2.4.1",
+    "ora": "^8.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.0",
+    "typescript": "^5.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codiku-dev/create-bangerstack.git"
+  }
+}
