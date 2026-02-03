@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import fs from "fs";
 import path from "path";
 import * as prompts from "./prompts.js";
@@ -18,9 +16,30 @@ import { setupEnvFiles } from "./env.js";
 import { runDbScripts } from "./database.js";
 import type { PmConfig } from "./types.js";
 
+const EXAMPLES_DIR = "apps/web/app/examples";
+const WEB_PAGE_PATH = "apps/web/app/page.tsx";
+const SIMPLE_PAGE_CONTENT = `export default function Home() {
+  return "Hello from Bangerstack"
+}
+`;
+
+async function applyExamplesChoice(workDir: string): Promise<void> {
+  const includeExamples = await prompts.confirmSelect("Include examples in the project?", true, "Include examples", "No examples");
+  if (includeExamples) return;
+
+  const examplesPath = path.join(workDir, EXAMPLES_DIR);
+  const pagePath = path.join(workDir, WEB_PAGE_PATH);
+
+  if (fs.existsSync(examplesPath)) {
+    fs.rmSync(examplesPath, { recursive: true, force: true });
+  }
+  if (fs.existsSync(pagePath)) {
+    fs.writeFileSync(pagePath, SIMPLE_PAGE_CONTENT.trimEnd() + "\n", "utf-8");
+  }
+}
+
 function printDoneMessage(
   projectName: string,
-  workDir: string,
   pmConfig: PmConfig,
   isCurrentDir: boolean
 ): void {
@@ -64,7 +83,9 @@ async function main(): Promise<void> {
 
     runDbScripts(workDir, pmConfig);
 
-    printDoneMessage(projectName, workDir, pmConfig, isCurrentDir);
+    await applyExamplesChoice(workDir);
+
+    printDoneMessage(projectName, pmConfig, isCurrentDir);
   } catch (err) {
     if (!isCurrentDir && fs.existsSync(targetDir)) {
       try {

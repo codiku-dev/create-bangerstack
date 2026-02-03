@@ -9,9 +9,15 @@ const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms
  *
  * @returns true if "docker info" succeeds, false otherwise.
  */
+const DOCKER_INFO_TIMEOUT_MS = 5000;
+
 export function isDockerRunning(): boolean {
   try {
-    execSync("docker info", { stdio: "pipe", shell: true } as unknown as import("child_process").ExecSyncOptions);
+    execSync("docker info", {
+      stdio: "pipe",
+      shell: true,
+      timeout: DOCKER_INFO_TIMEOUT_MS,
+    } as unknown as import("child_process").ExecSyncOptions);
     return true;
   } catch {
     return false;
@@ -39,18 +45,34 @@ export function startDockerDesktop(): boolean {
     return false;
   }
   if (plat === "darwin") {
-    try {
-      execSync("open -a Docker", { stdio: "pipe", shell: true } as unknown as import("child_process").ExecSyncOptions);
-      return true;
-    } catch {
-      return false;
+    const opts = { stdio: "pipe" as const, shell: true };
+    const tryOpen = (app: string): boolean => {
+      try {
+        execSync(`open -a "${app}"`, opts as unknown as import("child_process").ExecSyncOptions);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+    if (tryOpen("Docker")) return true;
+    if (tryOpen("Docker Desktop")) return true;
+    const dockerApp = "/Applications/Docker.app";
+    if (fs.existsSync(dockerApp)) {
+      try {
+        execSync(`open "${dockerApp}"`, opts as unknown as import("child_process").ExecSyncOptions);
+        return true;
+      } catch {
+        return false;
+      }
     }
+    return false;
   }
   return false;
 }
 
 /**
  * Polls until "docker info" succeeds or the timeout is reached.
+ * Logs progress every 5s so we can see we're actually waiting.
  *
  * @param timeoutMs - Maximum time to wait in milliseconds (default 60000).
  * @param intervalMs - Delay between checks in milliseconds (default 2000).
@@ -58,30 +80,45 @@ export function startDockerDesktop(): boolean {
  */
 export async function waitForDocker(timeoutMs = 60000, intervalMs = 2000): Promise<boolean> {
   const start = Date.now();
+  let lastLog = 0;
   while (Date.now() - start < timeoutMs) {
-    if (isDockerRunning()) return true;
+    if (isDockerRunning()) {
+      console.log("\n\u001b[2m[docker] docker info OK → Docker is ready.\u001b[0m");
+      return true;
+    }
+    const elapsed = Math.round((Date.now() - start) / 1000);
+    if (elapsed >= lastLog + 5) {
+      console.log("\n\u001b[2m[docker] Still waiting for Docker… " + elapsed + "s elapsed (docker info not ready yet).\u001b[0m");
+      lastLog = elapsed;
+    }
     await sleep(intervalMs);
   }
+  console.log("\n\u001b[2m[docker] Timeout reached, docker info never succeeded.\u001b[0m");
   return false;
 }
 
 /**
  * Full flow: if Docker is not running, starts Docker Desktop and waits until it is ready (with messages).
- * If already running or unsupported platform, only prints a message.
+ * Always waits for Docker to be ready (or timeout) before returning, so the CLI does not continue until Docker is up.
  */
 export async function runDockerDesktop(): Promise<void> {
+  console.log("\n\u001b[2m[docker] runDockerDesktop() entered.\u001b[0m");
+  console.log("\n\u001b[2m[docker] Checking if Docker is running (docker info)…\u001b[0m");
   if (isDockerRunning()) {
-    console.log("\n\u001b[2mDocker is already running.\u001b[0m");
+    console.log("\n\u001b[2m[docker] Docker is already running.\u001b[0m");
     return;
   }
-  if (!startDockerDesktop()) {
-    console.warn("\n\u001b[33mCould not start Docker Desktop. Start it manually (e.g. from the Start menu).\u001b[0m");
-    return;
+  console.log("\n\u001b[2m[docker] Docker is not running. Launching Docker Desktop…\u001b[0m");
+  const launched = startDockerDesktop();
+  if (!launched) {
+    console.log("\n\u001b[2m[docker] Launch command failed or not found. Waiting for Docker (start it manually, up to 60s)…\u001b[0m");
+  } else {
+    console.log("\n\u001b[2m[docker] Launch command executed. Waiting for Docker to be ready (up to 60s)…\u001b[0m");
   }
-  console.log("\n\u001b[2mStarting Docker Desktop… Waiting for Docker to be ready (up to 60s).\u001b[0m");
-  if (await waitForDocker()) {
+  const ready = await waitForDocker();
+  if (ready) {
     console.log("\n\u001b[32mDocker is ready.\u001b[0m");
   } else {
-    console.warn("\n\u001b[33mDocker did not start in time. Start it manually and re-run db:start if needed.\u001b[0m");
+    console.warn("\n\u001b[33mDocker did not become ready in time. Start it manually and re-run db:start if needed.\u001b[0m");
   }
 }

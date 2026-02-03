@@ -58,7 +58,7 @@ export async function getPackageManager(): Promise<PmConfig> {
  * Asks whether to install dependencies; if yes, runs the install command in workDir.
  */
 export async function installDependencies(workDir: string, pmConfig: PmConfig): Promise<void> {
-  const doInstall = await prompts.confirm("Install dependencies?", true);
+  const doInstall = await prompts.confirmSelect("Install dependencies?", true, "Install dependencies", "Skip");
   if (doInstall) {
     run(pmConfig.install, { cwd: workDir });
   }
@@ -68,9 +68,12 @@ export async function installDependencies(workDir: string, pmConfig: PmConfig): 
  * Asks whether to start Docker Desktop; if yes, runs the Docker Desktop start + wait flow.
  */
 export async function runDockerDesktop(): Promise<void> {
-  const startApp = await prompts.confirm("Start Docker Desktop (application)?", true);
+  const startApp = await prompts.confirmSelect("Start Docker Desktop?", true, "Start Docker Desktop", "Skip");
   if (startApp) {
+    console.log("\n\u001b[2m[Docker] Starting Docker Desktop flow…\u001b[0m");
     await docker.runDockerDesktop();
+  } else {
+    console.log("\n\u001b[2m[Docker] Skipped.\u001b[0m");
   }
 }
 
@@ -78,7 +81,7 @@ export async function runDockerDesktop(): Promise<void> {
  * Asks whether to start database containers; if yes, runs docker compose up -d.
  */
 export async function startDatabase(workDir: string): Promise<void> {
-  const doDocker = await prompts.confirm("Start database containers (docker compose)?", true);
+  const doDocker = await prompts.confirmSelect("Start database containers?", true, "Start database (docker compose)", "Skip");
   if (doDocker) {
     startDatabaseContainers(workDir);
   }

@@ -21,20 +21,32 @@ export async function choose(options: string[], message = "Choose"): Promise<str
 }
 
 /**
- * Asks a yes/no question.
+ * Asks a single-choice (radio-style) question with two options.
  *
  * @param message - The question text (e.g. "Install dependencies?").
- * @param defaultValue - Default answer when user presses Enter (true = Yes, false = No).
- * @returns true for Yes, false for No.
+ * @param defaultValue - Default selected option (true = first choice, false = second).
+ * @param yesChoice - Label for the "yes" option (e.g. "Install dependencies").
+ * @param noChoice - Label for the "skip" option (e.g. "Skip").
+ * @returns true if the first option was selected, false for the second.
  */
-export async function confirm(message: string, defaultValue = true): Promise<boolean> {
-  const { value } = await Enquirer.prompt<{ value: boolean }>({
-    type: "confirm",
+export async function confirmSelect(
+  message: string,
+  defaultValue = true,
+  yesChoice = "Yes",
+  noChoice = "Skip"
+): Promise<boolean> {
+  const choices = [
+    { name: yesChoice, value: "yes" },
+    { name: noChoice, value: "no" },
+  ];
+  const { value } = await Enquirer.prompt<{ value: string }>({
+    type: "select",
     name: "value",
     message,
-    initial: defaultValue,
+    choices,
+    initial: defaultValue ? 0 : 1,
   });
-  return value;
+  return value === "yes" || value === yesChoice;
 }
 
 /**
