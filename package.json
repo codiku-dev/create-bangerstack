@@ -1,6 +1,6 @@
 {
   "name": "create-bangerstack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Scaffold a new Bangerstack project from turbo-template (Next.js + NestJS monorepo)",
   "type": "module",
   "bin": {
