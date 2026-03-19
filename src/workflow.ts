@@ -8,7 +8,7 @@ import { startDatabaseContainers } from "./database.js";
 import type { PmConfig } from "./types.js";
 
 /** Git URL of the template repo to clone. */
-export const TEMPLATE_REPO = "https://github.com/codiku-dev/turbo-template.git";
+export const TEMPLATE_REPO = "https://github.com/codiku-dev/bangerstack.git";
 
 /** Default folder name when the user does not provide a project name. */
 export const DEFAULT_PROJECT_NAME = "bangerstack-project";
