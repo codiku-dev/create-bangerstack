@@ -1,10 +1,16 @@
 {
   "name": "create-bangerstack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Scaffold a new Bangerstack project from turbo-template (Next.js + NestJS monorepo)",
   "type": "module",
   "bin": {
-    "create-bangerstack": "./dist/cli.js"
+    "dev": "./dist/cli.js"
+  },
+  "scripts": {
+    "dev": "tsc && node dist/cli.js",
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "publish": "npm publish"
   },
   "engines": {
     "node": ">=18"
@@ -22,11 +28,7 @@
   "files": [
     "dist"
   ],
-  "scripts": {
-    "dev": "tsc && node dist/cli.js",
-    "build": "tsc",
-    "prepublishOnly": "npm run build"
-  },
+ 
   "dependencies": {
     "enquirer": "^2.4.1",
     "ora": "^8.1.1"

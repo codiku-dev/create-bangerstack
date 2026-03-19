@@ -5,11 +5,11 @@
       "name": "create-bangerstack",
       "dependencies": {
         "enquirer": "^2.4.1",
-        "ora": "^8.1.1",
+        "ora": "^8.1.1"
       },
       "devDependencies": {
         "@types/node": "^25.2.0",
-        "typescript": "^5.9.3",
+        "typescript": "^5.9.3"
       },
     },
   },

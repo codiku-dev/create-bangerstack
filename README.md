@@ -1,62 +1,62 @@
 # create-bangerstack
 
-Scaffold a new **Bangerstack** project (Turborepo avec Next.js + NestJS) en une commande, avec une CLI interactive via [enquirer](https://github.com/enquirer/enquirer).
+Scaffold a new **Bangerstack** project (Turborepo with Next.js + NestJS) in one command, using an interactive CLI powered by [enquirer](https://github.com/enquirer/enquirer).
 
-## Utilisation
+## Usage
 
 ```bash
 npx create-bangerstack
 ```
 
-Sans argument, la CLI te demande :
-- le **nom du projet** (défaut : `bangerstack-project`)
-- le **gestionnaire de paquets** (npm, yarn, pnpm, bun)
-- **Installer les dépendances ?** (oui/non)
-- **Démarrer Docker Desktop ?** (oui/non)
-- **Démarrer les conteneurs DB (docker compose) ?** (oui/non)
-- **Lancer le projet maintenant ?** (oui/non)
+Without any arguments, the CLI will prompt you for:
+- **Project name** (default: `bangerstack-project`)
+- **Package manager** (npm, yarn, pnpm, bun)
+- **Install dependencies?** (yes/no)
+- **Start Docker Desktop?** (yes/no)
+- **Start DB containers (docker compose)?** (yes/no)
+- **Start the project now?** (yes/no)
 
 ```bash
-npx create-bangerstack mon-projet
+npx create-bangerstack my-project
 ```
 
-Crée directement le projet dans `mon-projet` (les autres questions s’affichent quand même).
+Creates the project directly in `my-project` (the other questions are still prompted).
 
-## Ce que fait la commande
+## What the command does
 
-1. Clone le template [codiku-dev/turbo-template](https://github.com/codiku-dev/turbo-template)
-2. (Optionnel) Installation des dépendances avec le PM choisi
-3. (Optionnel) Démarrage de Docker (`docker compose up -d` si un `docker-compose.yml` existe)
-4. `db:start` puis `db:update` (scripts du template)
-5. (Optionnel) Lancement du serveur de dev
+1. Clones the template [codiku-dev/turbo-template](https://github.com/codiku-dev/turbo-template)
+2. (Optional) Installs dependencies with the selected package manager
+3. (Optional) Starts Docker (`docker compose up -d` if a `docker-compose.yml` exists)
+4. Runs `db:start` then `db:update` (template scripts)
+5. (Optional) Starts the development server
 
-## Prérequis
+## Requirements
 
-- [Node.js](https://nodejs.org/) (v18+) — requis pour `npx`
+- [Node.js](https://nodejs.org/) (v18+) — required for `npx`
 - [Git](https://git-scm.com/)
 
-## Développement (TypeScript)
+## Development (TypeScript)
 
-Le CLI est écrit en TypeScript. Chaque module et paramètre est documenté (JSDoc).
+The CLI is written in TypeScript. Each module and parameter is documented (JSDoc).
 
-- **Source** : `src/` — `cli.ts` (workflow), `run.ts`, `docker.ts`, `repo.ts`, `pm.ts`, `database.ts`, `env.ts`, `prompts.ts`, `types.ts`.
-- **Build** : `bun run build` → compile vers `dist/`.
-- **Entry** : `dist/cli.js` (pointé par `bin` dans `package.json`).
+- **Source**: `src/` — `cli.ts` (workflow), `run.ts`, `docker.ts`, `repo.ts`, `pm.ts`, `database.ts`, `env.ts`, `prompts.ts`, `types.ts`.
+- **Build**: `bun run build` → compiles to `dist/`.
+- **Entry point**: `dist/cli.js` (targeted by `bin` in `package.json`).
 
-Tester en local :
+To test locally:
 
 ```bash
 bun run build
-node dist/cli.js mon-projet
+node dist/cli.js my-project
 ```
 
-Ou après `bun link` : `npx create-bangerstack test-app`.
+Or after `bun link`: `npx create-bangerstack test-app`.
 
-## Publication sur npm
+## Publishing to npm
 
 ```bash
 bun run build
 npm publish
 ```
 
-(`prepublishOnly` lance le build automatiquement avant publish.)
+(`prepublishOnly` will automatically run the build before publishing.)
