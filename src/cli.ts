@@ -10,11 +10,12 @@ import {
   ensureTargetDir,
   getPackageManager,
   installDependencies,
+  encryptEnv,
   runDockerDesktop,
   startDatabase,
 } from "./workflow.js";
 import { cloneRepository } from "./repo.js";
-import { setupEnvFiles } from "./env.js";
+import { setupEnvEncryption } from "./envEncryption.js";
 import { runDbScripts } from "./database.js";
 import type { PmConfig } from "./types.js";
 
@@ -73,11 +74,13 @@ async function main(): Promise<void> {
     const workDir = isCurrentDir ? process.cwd() : targetDir;
     process.chdir(workDir);
 
+    setupEnvEncryption(workDir);
+
     const pmConfig = await getPackageManager();
 
     await installDependencies(workDir, pmConfig);
 
-    setupEnvFiles(workDir);
+    await encryptEnv(workDir, pmConfig);
 
     await runDockerDesktop();
 

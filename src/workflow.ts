@@ -65,10 +65,20 @@ export async function installDependencies(workDir: string, pmConfig: PmConfig): 
 }
 
 /**
+ * Runs `encrypt-env` script if present in the project.
+ * Template expects `npx dotenvx encrypt ...` to re-encrypt .env.production using the private key in apps/api/.env.keys.
+ */
+export async function encryptEnv(workDir: string, pmConfig: PmConfig): Promise<void> {
+  const pkgPath = path.join(workDir, "package.json");
+  if (!fs.existsSync(pkgPath)) return;
+  run(pmConfig.run("encrypt-env").join(" "), { cwd: workDir });
+}
+
+/**
  * Asks whether to start Docker Desktop; if yes, runs the Docker Desktop start + wait flow.
  */
 export async function runDockerDesktop(): Promise<void> {
-  const startApp = await prompts.confirmSelect("Start Docker Desktop?", true, "Start Docker Desktop", "Skip");
+  const startApp = await prompts.confirmSelect("Should we start Docker Desktop client?", true, "Yes start Docker Desktop", "Skip");
   if (startApp) {
     console.log("\n\u001b[2m[Docker] Starting Docker Desktop flow…\u001b[0m");
     await docker.runDockerDesktop();
