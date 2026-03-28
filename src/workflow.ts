@@ -58,7 +58,7 @@ export async function getPackageManager(): Promise<PmConfig> {
  * Asks whether to install dependencies; if yes, runs the install command in workDir.
  */
 export async function installDependencies(workDir: string, pmConfig: PmConfig): Promise<void> {
-  const doInstall = await prompts.confirmSelect("Install dependencies?", true, "Install dependencies", "Skip");
+  const doInstall = await prompts.confirmSelect("Install dependencies?", true, "Yes", "No, skip.");
   if (doInstall) {
     run(pmConfig.install, { cwd: workDir });
   }
@@ -76,22 +76,43 @@ export async function encryptEnv(workDir: string, pmConfig: PmConfig): Promise<v
 
 /**
  * Asks whether to start Docker Desktop; if yes, runs the Docker Desktop start + wait flow.
+ *
+ * @returns Whether the user chose to start Docker Desktop (false if they skipped).
  */
+<<<<<<< Updated upstream
 export async function runDockerDesktop(): Promise<void> {
   const startApp = await prompts.confirmSelect("Should we start Docker Desktop client?", true, "Yes start Docker Desktop", "Skip");
+=======
+export async function runDockerDesktop(): Promise<boolean> {
+  const startApp = await prompts.confirmSelect("Start Docker Desktop?", true, "Yes", "No, Skip");
+>>>>>>> Stashed changes
   if (startApp) {
     console.log("\n\u001b[2m[Docker] Starting Docker Desktop flow…\u001b[0m");
     await docker.runDockerDesktop();
   } else {
     console.log("\n\u001b[2m[Docker] Skipped.\u001b[0m");
   }
+  return startApp;
 }
 
 /**
  * Asks whether to start database containers; if yes, runs docker compose up -d.
+ *
+ * If Docker is not running and the user previously chose not to start Docker Desktop, skips this step
+ * without prompting — `docker compose` can still launch Docker Desktop on Windows.
+ *
+ * @param userChoseToStartDockerDesktop - Result from {@link runDockerDesktop} (whether they picked "Start Docker Desktop").
  */
-export async function startDatabase(workDir: string): Promise<void> {
-  const doDocker = await prompts.confirmSelect("Start database containers?", true, "Start database (docker compose)", "Skip");
+export async function startDatabase(workDir: string, userChoseToStartDockerDesktop: boolean): Promise<void> {
+  if (!docker.isDockerRunning() && !userChoseToStartDockerDesktop) {
+    console.log(
+      "\n\u001b[2m[Docker] Skipping database containers: Docker is not running and you chose not to start Docker Desktop.\u001b[0m"
+    );
+    console.log("\u001b[2m  (Running compose would often start Docker anyway.) Start Docker later, then run your db scripts.\u001b[0m");
+    return;
+  }
+
+  const doDocker = await prompts.confirmSelect("Start database containers? (docker compose)", true, "Yes", "No, Skip");
   if (doDocker) {
     startDatabaseContainers(workDir);
   }

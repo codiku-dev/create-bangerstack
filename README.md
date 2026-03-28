@@ -39,15 +39,25 @@ Creates the project directly in `my-project` (the other questions are still prom
 
 The CLI is written in TypeScript. Each module and parameter is documented (JSDoc).
 
+<<<<<<< Updated upstream
 - **Source**: `src/` — `cli.ts` (workflow), `run.ts`, `docker.ts`, `repo.ts`, `pm.ts`, `database.ts`, `env.ts`, `prompts.ts`, `types.ts`.
 - **Build**: `bun run build` → compiles to `dist/`.
 - **Entry point**: `dist/cli.js` (targeted by `bin` in `package.json`).
+=======
+- **Source** : `src/` — `main.ts` (workflow), `run.ts`, `docker.ts`, `repo.ts`, `pm.ts`, `database.ts`, `env.ts`, `prompts.ts`, `types.ts`.
+- **Build** : `bun run build` → compile vers `dist/`.
+- **Entry** : `dist/main.js` (pointé par `bin` dans `package.json`).
+>>>>>>> Stashed changes
 
 To test locally:
 
 ```bash
 bun run build
+<<<<<<< Updated upstream
 node dist/cli.js my-project
+=======
+node dist/main.js mon-projet
+>>>>>>> Stashed changes
 ```
 
 Or after `bun link`: `npx create-bangerstack test-app`.

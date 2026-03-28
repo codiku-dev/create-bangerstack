@@ -2,6 +2,9 @@ import { execSync } from "child_process";
 import Enquirer from "enquirer";
 import ora from "ora";
 
+/** One choice label, or a display name plus distinct value for selects. */
+export type ChooseOption = string | { name: string; value: string };
+
 /**
  * Displays a select list and returns the chosen value.
  *
@@ -9,13 +12,22 @@ import ora from "ora";
  * @param message - Label shown above the list (e.g. "Package manager").
  * @returns The selected value (string).
  */
-export async function choose(options: string[], message = "Choose"): Promise<string> {
+export async function choose(options: string[], message?: string): Promise<string>;
+export async function choose(options: { name: string; value: string }[], message?: string): Promise<string>;
+export async function choose(options: ChooseOption[], message = "Choose"): Promise<string> {
   const choices = options.map((opt) => (typeof opt === "string" ? { name: opt, value: opt } : opt));
   const { value } = await Enquirer.prompt<{ value: string }>({
     type: "select",
     name: "value",
     message,
     choices,
+    // Enquirer's select stores `choice.name` as the answer, not `choice.value`. Map back so callers
+    // receive stable values (e.g. platform "mobile" instead of the long label).
+    result: (selectedName: string) => {
+      const ch = choices.find((c) => c.name === selectedName);
+      if (ch !== undefined && ch.value !== "") return ch.value;
+      return selectedName;
+    },
   });
   return value;
 }
@@ -45,8 +57,14 @@ export async function confirmSelect(
     message,
     choices,
     initial: defaultValue ? 0 : 1,
+    // Same as choose(): Enquirer answers with `choice.name`; normalize to yes/no.
+    result: (selectedName: string) => {
+      const ch = choices.find((c) => c.name === selectedName);
+      if (ch !== undefined && ch.value !== "") return ch.value;
+      return selectedName;
+    },
   });
-  return value === "yes" || value === yesChoice;
+  return value === "yes";
 }
 
 /**
