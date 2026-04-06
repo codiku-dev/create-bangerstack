@@ -1,0 +1,80 @@
+{
+  "name": "bangerstack",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "author": "",
+  "license": "UNLICENSED",
+  "scripts": {
+    "#--------------------------GENERAL------------------------------#": "",
+    "build": "turbo run build",
+    "#--------------------------DEV------------------------------#": "",
+    "dev:web+api": " bun run db:start && bun db:update && turbo run dev --filter=api... --filter=web...",
+    "prod:web+api": "bun run db:start && bun db:update && turbo run prod --filter=api... --filter=web...",
+    "dev:mobile+api": "bun run db:start && bun db:update && turbo run dev --filter=api... --filter=mobile...",
+    "dev:mobile": "turbo run dev --filter=mobile...",
+    "dev:web": "turbo run dev --filter=web...",
+    "dev:api": "turbo run dev --filter=api...",
+    "dev:ui": "turbo run dev --filter=@repo/ui...",
+    "#--------------------------TESTING------------------------------#": "",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "#--------------------------LINTING------------------------------#": "",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "#---------------------------API---------------------------------#": "",
+    "start:api": "bunx turbo run start:prod --filter=api...",
+    "build:api": "bun install && bunx turbo run build --filter=api...",
+    "db:start": "turbo run db:start --filter=api",
+    "db:update": "cd apps/api && bun run db:update",
+    "db:studio": "turbo run db:studio --filter=api",
+    "#---------------------------WEB---------------------------------#": "",
+    "start:web": "bunx turbo run start:prod --filter=web...",
+    "build:web": "bun install && bunx turbo run build --filter=web...",
+    "#---------------------------UI---------------------------------#": "",
+    "storybook": "turbo run storybook --filter=@repo/ui",
+    "build-storybook": "turbo run build-storybook --filter=@repo/ui",
+    "ui:build:styles": "turbo run build:styles --filter=@repo/ui",
+    "ui:build:components": "turbo run build:components --filter=@repo/ui",
+    "ui:dev:styles": "turbo run dev:styles --filter=@repo/ui",
+    "ui:dev:components": "turbo run dev:components --filter=@repo/ui",
+    "#---------------------------ENV---------------------------------#": "",
+    "check-env": "bun run scripts/check-env-all-apps.ts",
+    "check-env:watch": "bun run scripts/check-env-all-apps.ts -- --watch",
+    "encrypt-env": "npx dotenvx encrypt -f ./apps/*/.env.production",
+    "decrypt-env": "npx dotenvx decrypt -f ./apps/*/.env.production",
+    "mobile-pwa:dev+api": "bun run db:start && bun db:update && turbo run dev --filter=api... --filter=mobile-pwa...",
+    "mobile-pwa:dev": "turbo run dev --filter=mobile-pwa...",
+    "mobile-pwa:android": "cd apps/mobile-pwa && bun run android",
+    "mobile-pwa:ios": "cd apps/mobile-pwa && bun run ios",
+    "mobile-pwa:release:android": "cd apps/mobile-pwa && bun run release:android",
+    "dev": "turbo run dev --filter=api... --filter=web... --filter=mobile-pwa..."
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "chokidar": "^4.0.1",
+    "concurrently": "^9.1.0",
+    "prettier": "^3.2.5",
+    "turbo": "^2.8.3"
+  },
+  "overrides": {
+    "@types/react": "19.2.9",
+    "@types/react-dom": "19.2.3"
+  },
+  "packageManager": "bun@1.2.15",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.52.0",
+    "build": "^0.1.4",
+    "bunx": "^0.1.0",
+    "nestjs-trpc": "1.6.1",
+    "run": "^1.5.0"
+  },
+  "engines": {
+    "node": "20.19.0"
+  }
+}

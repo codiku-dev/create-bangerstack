@@ -1,7 +1,7 @@
 import type { PackageManagerName, PmConfig } from "./types.js";
 
 /** List of supported package manager names (used for prompts and validation). */
-export const PM_NAMES: PackageManagerName[] = ["npm", "yarn", "pnpm", "bun"];
+export const PM_NAMES: PackageManagerName[] = ["bun", "npm", "yarn", "pnpm"];
 
 /** Fallback when the chosen or detected PM is invalid. */
 export const PM_DEFAULT: PackageManagerName = "npm";

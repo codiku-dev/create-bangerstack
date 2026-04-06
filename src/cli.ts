@@ -17,6 +17,12 @@ import {
 import { cloneRepository } from "./repo.js";
 import { setupEnvEncryption } from "./envEncryption.js";
 import { runDbScripts } from "./database.js";
+import {
+  applyStackPrune,
+  hasAnyAppChoice,
+  patchRootPackageAfterPrune,
+  promptStackChoices,
+} from "./stackPrune.js";
 import type { PmConfig } from "./types.js";
 
 const EXAMPLES_DIR = "apps/web/app/examples";
@@ -26,7 +32,8 @@ const SIMPLE_PAGE_CONTENT = `export default function Home() {
 }
 `;
 
-async function applyExamplesChoice(workDir: string): Promise<void> {
+async function applyExamplesChoice(workDir: string, includeWeb: boolean): Promise<void> {
+  if (!includeWeb) return;
   const includeExamples = await prompts.confirmSelect("Include examples in the project?", true, "Include examples", "No examples");
   if (includeExamples) return;
 
@@ -68,11 +75,27 @@ async function main(): Promise<void> {
   const { targetDir, isCurrentDir } = ensureTargetDir(projectName);
   const cloneTarget = isCurrentDir ? path.join(process.cwd(), ".bangerstack-tmp-clone") : targetDir;
 
+  let copiedTopLevel: string[] = [];
   try {
-    cloneRepository(TEMPLATE_REPO, cloneTarget, isCurrentDir);
+    const stackChoices = await promptStackChoices();
+    if (!hasAnyAppChoice(stackChoices)) {
+      if (!isCurrentDir && fs.existsSync(targetDir)) {
+        fs.rmSync(targetDir, { recursive: true, force: true });
+      }
+      console.log(
+        "\n\u001b[33mPick at least one of: backend (API) or web (Next.js, PWA).\u001b[0m"
+      );
+      console.log("\u001b[2mNothing was created. Exiting.\u001b[0m\n");
+      process.exit(0);
+    }
+
+    copiedTopLevel = cloneRepository(TEMPLATE_REPO, cloneTarget, isCurrentDir);
 
     const workDir = isCurrentDir ? process.cwd() : targetDir;
     process.chdir(workDir);
+
+    applyStackPrune(workDir, stackChoices);
+    patchRootPackageAfterPrune(workDir, stackChoices);
 
     setupEnvEncryption(workDir);
 
@@ -82,13 +105,13 @@ async function main(): Promise<void> {
 
     await encryptEnv(workDir, pmConfig);
 
-    await runDockerDesktop();
+    await runDockerDesktop(stackChoices.includeApi);
 
-    await startDatabase(workDir);
+    await startDatabase(workDir, stackChoices.includeApi);
 
-    runDbScripts(workDir, pmConfig);
+    runDbScripts(workDir, pmConfig, stackChoices.includeApi);
 
-    await applyExamplesChoice(workDir);
+    await applyExamplesChoice(workDir, stackChoices.includeWeb);
 
     printDoneMessage(projectName, pmConfig, isCurrentDir);
   } catch (err) {
@@ -96,6 +119,13 @@ async function main(): Promise<void> {
       try {
         fs.rmSync(targetDir, { recursive: true, force: true });
       } catch (_) { }
+    } else if (isCurrentDir && copiedTopLevel.length > 0) {
+      for (const name of copiedTopLevel) {
+        try {
+          const p = path.join(process.cwd(), name);
+          if (fs.existsSync(p)) fs.rmSync(p, { recursive: true, force: true });
+        } catch (_) { }
+      }
     }
     console.error((err as Error)?.message ?? err);
     process.exit(1);

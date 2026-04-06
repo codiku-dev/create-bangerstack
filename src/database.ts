@@ -44,7 +44,8 @@ export function startDatabaseContainers(workDir: string): void {
  * @param workDir - Absolute path of the project root (where package.json with db:start / db:update lives).
  * @param pmConfig - Package manager config (install + run) so we use the same PM as the user chose.
  */
-export function runDbScripts(workDir: string, pmConfig: PmConfig): void {
+export function runDbScripts(workDir: string, pmConfig: PmConfig, includeApi: boolean): void {
+  if (!includeApi) return;
   run(pmConfig.run("db:start").join(" "), { cwd: workDir });
   run(pmConfig.run("db:update").join(" "), { cwd: workDir });
 }

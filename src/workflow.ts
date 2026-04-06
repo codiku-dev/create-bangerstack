@@ -58,7 +58,7 @@ export async function getPackageManager(): Promise<PmConfig> {
  * Asks whether to install dependencies; if yes, runs the install command in workDir.
  */
 export async function installDependencies(workDir: string, pmConfig: PmConfig): Promise<void> {
-  const doInstall = await prompts.confirmSelect("Install dependencies?", true, "Install dependencies", "Skip");
+  const doInstall = await prompts.confirmSelect("Install dependencies?", true, "Yes", "No");
   if (doInstall) {
     run(pmConfig.install, { cwd: workDir });
   }
@@ -69,6 +69,8 @@ export async function installDependencies(workDir: string, pmConfig: PmConfig): 
  * Template expects `npx dotenvx encrypt ...` to re-encrypt .env.production using the private key in apps/api/.env.keys.
  */
 export async function encryptEnv(workDir: string, pmConfig: PmConfig): Promise<void> {
+  const apiDir = path.join(workDir, "apps", "api");
+  if (!fs.existsSync(apiDir)) return;
   const pkgPath = path.join(workDir, "package.json");
   if (!fs.existsSync(pkgPath)) return;
   run(pmConfig.run("encrypt-env").join(" "), { cwd: workDir });
@@ -76,9 +78,14 @@ export async function encryptEnv(workDir: string, pmConfig: PmConfig): Promise<v
 
 /**
  * Asks whether to start Docker Desktop; if yes, runs the Docker Desktop start + wait flow.
+ * Skipped when there is no API (DB compose lives under the API app).
  */
-export async function runDockerDesktop(): Promise<void> {
-  const startApp = await prompts.confirmSelect("Should we start Docker Desktop client?", true, "Yes start Docker Desktop", "Skip");
+export async function runDockerDesktop(includeApi: boolean): Promise<void> {
+  if (!includeApi) {
+    console.log("\n\u001b[2m[Docker] No API — skipped Docker Desktop.\u001b[0m");
+    return;
+  }
+  const startApp = await prompts.confirmSelect("Start Docker Desktop client?", true, "Yes", "No");
   if (startApp) {
     console.log("\n\u001b[2m[Docker] Starting Docker Desktop flow…\u001b[0m");
     await docker.runDockerDesktop();
@@ -90,8 +97,12 @@ export async function runDockerDesktop(): Promise<void> {
 /**
  * Asks whether to start database containers; if yes, runs docker compose up -d.
  */
-export async function startDatabase(workDir: string): Promise<void> {
-  const doDocker = await prompts.confirmSelect("Start database containers?", true, "Start database (docker compose)", "Skip");
+export async function startDatabase(workDir: string, includeApi: boolean): Promise<void> {
+  if (!includeApi) {
+    console.log("\n\u001b[2m[Database] No API — skipped starting database containers.\u001b[0m");
+    return;
+  }
+  const doDocker = await prompts.confirmSelect("Start database containers?", true, "Yes", "No");
   if (doDocker) {
     startDatabaseContainers(workDir);
   }

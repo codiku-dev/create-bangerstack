@@ -9,7 +9,6 @@
   "scripts": {
     "dev": "tsc && node dist/cli.js",
     "build": "tsc",
-    "prepublishOnly": "npm run build",
     "publish": "npm publish"
   },
   "engines": {
