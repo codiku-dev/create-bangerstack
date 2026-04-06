@@ -1,0 +1,4 @@
+- Update Ci to avoid rebuild mobile
+- Deployment mobile
+- Trpc mobile
+- Env management mobile

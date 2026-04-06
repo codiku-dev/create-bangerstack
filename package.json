@@ -4,12 +4,16 @@
   "description": "Scaffold a new Bangerstack project from turbo-template (Next.js + NestJS monorepo)",
   "type": "module",
   "bin": {
+<<<<<<< Updated upstream
     "dev": "./dist/cli.js"
   },
   "scripts": {
     "dev": "tsc && node dist/cli.js",
     "build": "tsc",
     "publish": "npm publish"
+=======
+    "create-bangerstack": "./dist/main.js"
+>>>>>>> Stashed changes
   },
   "engines": {
     "node": ">=18"
@@ -27,7 +31,15 @@
   "files": [
     "dist"
   ],
+<<<<<<< Updated upstream
  
+=======
+  "scripts": {
+    "dev": "tsc && node dist/main.js",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+>>>>>>> Stashed changes
   "dependencies": {
     "enquirer": "^2.4.1",
     "ora": "^8.1.1"
