@@ -14,6 +14,7 @@ import {
   startDatabase,
 } from "./workflow.js";
 import { cloneRepository } from "./repo.js";
+import { applyNativeMobilePrune } from "./pruneMobileNative.js";
 import { setupEnvFiles } from "./env.js";
 import { runDbScripts } from "./database.js";
 import type { PmConfig } from "./types.js";
@@ -72,6 +73,8 @@ async function main(): Promise<void> {
 
     const workDir = isCurrentDir ? process.cwd() : targetDir;
     process.chdir(workDir);
+
+    applyNativeMobilePrune(workDir);
 
     const pmConfig = await getPackageManager();
 

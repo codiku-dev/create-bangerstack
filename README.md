@@ -25,10 +25,12 @@ Crée directement le projet dans `mon-projet` (les autres questions s’affichen
 ## Ce que fait la commande
 
 1. Clone le template [codiku-dev/turbo-template](https://github.com/codiku-dev/turbo-template)
-2. (Optionnel) Installation des dépendances avec le PM choisi
-3. (Optionnel) Démarrage de Docker (`docker compose up -d` si un `docker-compose.yml` existe)
-4. `db:start` puis `db:update` (scripts du template)
-5. (Optionnel) Lancement du serveur de dev
+2. Supprime l’app mobile **native** (`apps/mobile`, ex. Capacitor) si elle est encore présente ; conserve **mobile-pwa**. Nettoie les scripts racine associés.
+3. (Optionnel) Installation des dépendances avec le PM choisi
+4. Génération des fichiers `.env` (api + web)
+5. (Optionnel) Démarrage de Docker / conteneurs DB
+6. `db:start` puis `db:update` (scripts du template)
+7. (Optionnel) Exemples web + message de fin
 
 ## Prérequis
 
@@ -39,7 +41,7 @@ Crée directement le projet dans `mon-projet` (les autres questions s’affichen
 
 Le CLI est écrit en TypeScript. Chaque module et paramètre est documenté (JSDoc).
 
-- **Source** : `src/` — `cli.ts` (workflow), `run.ts`, `docker.ts`, `repo.ts`, `pm.ts`, `database.ts`, `env.ts`, `prompts.ts`, `types.ts`.
+- **Source** : `src/` — `cli.ts`, `workflow.ts`, `pruneMobileNative.ts`, `repo.ts`, `run.ts`, `docker.ts`, `pm.ts`, `database.ts`, `env.ts`, `prompts.ts`, `nodeVersion.ts`, `types.ts`.
 - **Build** : `bun run build` → compile vers `dist/`.
 - **Entry** : `dist/cli.js` (pointé par `bin` dans `package.json`).
 
